@@ -30,6 +30,6 @@
 float dtw(int n_ck, int n_cunk, int dim_mfcc, float* c_k, float* c_unk) {
 
 /* à compléter */
-    
+    return 0.0;
     
 }

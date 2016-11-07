@@ -38,6 +38,11 @@ public class Recorder extends AppCompatActivity {
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setClickable(false);
 
+        //System.load("C:\\Users\\IDA\\AndroidStudioProjects\\DroneControl\\app\\build\\intermediates\\transforms\\stripDebugSymbol\\debug\\folders\\2000\\1f\\main\\lib\\x86\\liblol.so");
+        System.loadLibrary("lol");
+
+        lol.dtw(1, 2, 3, 4.4, 5.5);
+
     }
 
     public void record(View view) {

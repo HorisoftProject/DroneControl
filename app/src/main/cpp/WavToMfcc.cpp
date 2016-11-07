@@ -21,7 +21,7 @@
 #include "libmfccOptim.h"
 #include "FFTReal.h"
 #include "WavToMfcc.h"
-#include <omp.h>
+//#include <omp.h>
 
 /**
 * Safety function to ensure the system use big endian
