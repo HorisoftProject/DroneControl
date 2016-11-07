@@ -95,7 +95,9 @@ public class Recorder extends AppCompatActivity {
         System.out.println("in  stop\n");
 
         ar.stop();
+        ar.release();
         isRecording = false;
+        recordingThread.interrupt();
     }
 
     public void writeAudio() {
