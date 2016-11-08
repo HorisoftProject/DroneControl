@@ -14,6 +14,8 @@
 #include <math.h>
 #include <iostream>
 #include "dtw.h"
+#include <jni.h>
+#include "JNI.h"
 
 
 /**
@@ -27,9 +29,18 @@
 *  @return Distance between the two signals
 */
 
-float dtw(int n_ck, int n_cunk, int dim_mfcc, float* c_k, float* c_unk) {
+JNIEXPORT jfloat JNICALL
+Java_com_example_ida_dronecontrol_CalculVocal_dtw(JNIEnv *env, jobject instance) {
+
+    return 1.9;
+
+}
+
+
+/*float dtw(int n_ck, int n_cunk, int dim_mfcc, float* c_k, float* c_unk) {
 
 /* à compléter */
-    return 0.0;
+   // return 1.9;
     
-}
+//}
+

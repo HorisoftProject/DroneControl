@@ -30,6 +30,10 @@ public class Recorder extends AppCompatActivity {
     private Thread recordingThread = null;
     boolean isRecording = false;
 
+    static {
+        System.loadLibrary("lol");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +43,8 @@ public class Recorder extends AppCompatActivity {
         button2.setClickable(false);
 
         //System.load("C:\\Users\\IDA\\AndroidStudioProjects\\DroneControl\\app\\build\\intermediates\\transforms\\stripDebugSymbol\\debug\\folders\\2000\\1f\\main\\lib\\x86\\liblol.so");
-        System.loadLibrary("lol");
 
-        lol.dtw(1, 2, 3, 4.4, 5.5);
+
 
     }
 
@@ -103,6 +106,11 @@ public class Recorder extends AppCompatActivity {
         ar.release();
         isRecording = false;
         recordingThread.interrupt();
+
+        CalculVocal c = new CalculVocal();
+
+
+        chrono.setBase((long) c.dtw());
     }
 
     public void writeAudio() {
