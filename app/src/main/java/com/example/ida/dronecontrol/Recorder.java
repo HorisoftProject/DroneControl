@@ -1,5 +1,6 @@
 package com.example.ida.dronecontrol;
 
+import android.content.pm.ActivityInfo;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -29,6 +32,9 @@ public class Recorder extends AppCompatActivity {
     AudioRecord ar = null;
     private Thread recordingThread = null;
     boolean isRecording = false;
+    private int numRec =0;
+    private String name = "";
+    private String[] words = new String[] {"avance","recule","arrete toi", "fais un flip","stop"};
 
     static {
         System.loadLibrary("lol");
@@ -39,28 +45,46 @@ public class Recorder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recorder);
 
+        Button button = (Button) findViewById(R.id.button);
+        button.setClickable(false);
+
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setClickable(false);
 
         //System.load("C:\\Users\\IDA\\AndroidStudioProjects\\DroneControl\\app\\build\\intermediates\\transforms\\stripDebugSymbol\\debug\\folders\\2000\\1f\\main\\lib\\x86\\liblol.so");
 
+        TextView text = (TextView) findViewById(R.id.textView1);
+        text.setText(words[numRec]);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
 
     }
 
+    public void nom(View view) {
+        Button button = (Button) findViewById(R.id.button);
+        button.setClickable(true);
+
+        EditText n = (EditText) findViewById(R.id.editText);
+
+        this.name = String.valueOf(n.getText());
+    }
+
     public void record(View view) {
+
         Button button = (Button) findViewById(R.id.button);
         button.setClickable(false);
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setClickable(true);
+        Button button3 = (Button) findViewById(R.id.button3);
+        button3.setClickable(false);
 
         Chronometer chrono = (Chronometer) findViewById(R.id.chronometer1);
         chrono.setBase(SystemClock.elapsedRealtime());
         chrono.start();
 
         System.out.println("in record\n");
-
-        System.out.println("LOL\n");
 
         //int rate = this.rateBuff();
 
@@ -91,8 +115,18 @@ public class Recorder extends AppCompatActivity {
     }
 
     public void stop(View view) {
-        Button button = (Button) findViewById(R.id.button);
-        button.setClickable(true);
+        numRec++;
+
+        if (numRec != words.length) {
+            Button button = (Button) findViewById(R.id.button);
+            button.setClickable(true);
+            TextView text = (TextView) findViewById(R.id.textView1);
+            text.setText(words[numRec]);
+        }
+        else {
+            TextView text = (TextView) findViewById(R.id.textView1);
+            text.setText("Enregistrments terminés\n");
+        }
 
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setClickable(false);
@@ -110,17 +144,18 @@ public class Recorder extends AppCompatActivity {
         CalculVocal c = new CalculVocal();
 
 
-        chrono.setBase((long) c.dtw());
+
     }
 
     public void writeAudio() {
-        String path = "/sdcard/test.pcm";
+        String path = "/sdcard/"+this.name+"-"+words[numRec];
+        String pcm = path+".pcm";
 
         short sData[] = new short[buffsize/2];
 
         FileOutputStream os = null;
         try {
-            os = new FileOutputStream(path);
+            os = new FileOutputStream(pcm);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -146,10 +181,11 @@ public class Recorder extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        File f1 = new File(path);
+        File f1 = new File(pcm);
 
         try {
-            rawToWave(f1);
+            rawToWave(f1,path);
+            f1.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -179,7 +215,7 @@ public class Recorder extends AppCompatActivity {
         return 0;
     }
 
-    private void rawToWave(final File rawFile) throws IOException {
+    private void rawToWave(final File rawFile, String path) throws IOException {
 
         byte[] rawData = new byte[(int) rawFile.length()];
         DataInputStream input = null;
@@ -194,9 +230,9 @@ public class Recorder extends AppCompatActivity {
 
         DataOutputStream output = null;
         try {
-            String path = "/sdcard/test.wav";
+            String wav = path+".wav";
 
-            output = new DataOutputStream(new FileOutputStream(path));
+            output = new DataOutputStream(new FileOutputStream(wav));
             // WAVE header
             // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
             writeString(output, "RIFF"); // chunk id
